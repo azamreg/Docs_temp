@@ -1,0 +1,202 @@
+> Webs referencia
+	> Code
+		> General
+			> https://github.com/
+			> http://www.codeproject.com/
+			> http://stackoverflow.com/
+			> https://msdn.microsoft.com/es-es/library/ms123401.aspx							
+		> NET
+			> http://www.asp.net/
+	> Por aprobar ...
+		> Articulos de .NET > http://www.strathweb.com/
+> Recursos
+	> Font Awesome (v3.2.0)								
+> Themes
+	> Metronic [ http://keenthemes.com/preview/metronic/ ]
+> Protocolos
+	> Transporte
+		> AMQP [para MassTransit]
+> APIs
+	> Servidor
+		> Mensajería [MassTransit]
+		> Logging [Log4Net]
+		> Mapping objects [AutoMapper]
+		> Validations [Fluent Validation]
+		> Archivos csv [csv Helper]
+		> Testing [Mocking]
+		> EntityFramework [ORM]
+		> NET Framework 4.5
+	> Cliente
+		> jQuery (v.1.10.2)
+> Patrones
+	> Patrones de diseño
+		> Unit of Work [Repository | Transactions]
+		> Data Acces Object (DAO)
+	> Patrones de creación: 
+		> Factory
+	> Patrones de caso de uso:
+		> Métodos CRUD
+		> Reglas de negocio
+		> Login
+		> Reportes y Explotación de información
+		> Inclusión y Extensión
+> Arquitecturas
+	> Layered Architecture.
+		> Data
+			> Entity Framework (Ver ORMs -EntityFramework-)
+			> Mass Transit
+		> Domain
+		> Application
+		> View | WebApi
+			> MVC + AngularJS + WebApi
+	> Domain Driven Design
+			> Entidades
+			> DTO
+				> Crer DtoInput || DtoOutput || DtoEntity
+				> Mapping Dto to Entity || Mapping Entity to Dto
+					C>
+						public static class DtoMappings {
+							public static IMappingExpression<TSource, TDestination> Ignore<TSource, TDestination>(this IMappingExpression<TSource, TDestination> map, Expression<Func<TDestination, object>> selector) {
+									map.ForMember(selector, config => config.Ignore());
+									return map;
+							}
+							public static void ConfigureMappings() {
+								Mapper.CreateMap<ApplicationUser, UserDto>()
+									.ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Avatar) ? string.Empty : string.Format("{0}/api/Medias/GetCenterAvatar?fileName={1}", ConfigurationManager.AppSettings["UrlServerAPI"], src.Avatar)))
+									.ForMember(dest => dest.SignatureUrl, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Signature) ? string.Empty : string.Format("{0}/api/Medias/GetUserSignature?fileName={1}", ConfigurationManager.AppSettings["UrlServerAPI"], src.Signature)));
+								Mapper.CreateMap<UserDto, ApplicationUser>();
+								//...
+							}
+						}
+								
+				
+			> Repositorios (Ver patron de diseño -Repository-)
+> ORMs (Object-Relational Mapping)
+	> EntityFramework v6
+		> Entity Framework Class Library 6.0 [ https://msdn.microsoft.com/en-us/library/mt154346(v=vs.113).aspx ]
+			> System.Data.Entity
+			> System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<TEntity>
+	> NHibernate
+> Frameworks
+	> Framework -HTML/CSS-
+		> Twitter Bootstrap (v3.3.5)
+	> Framework -Multi Page Web Application- > NET
+		> ASP.NET MVC
+		> ASP.NET Web API
+		> > ASP.NET Core
+		> > ASP.NET vNext (a unified framework set to succeed MVC, Web API and Web Pages)
+	> Framework -SPA (Single Page Web Application)-
+		> AngularJS
+		> Durandal
+	> Framework -Dependency Injection-
+		> Castle Windsor
+		> Microsoft Unity
+		> NInject
+	> Framework -Application-
+		> ASP.NET Boilerplate
+			> Webs
+				> http://www.aspnetboilerplate.com/
+				> https://aspnetzero.com/
+				<> Por revisar
+					> http://www.codeproject.com/Articles/791740/Using-AngularJs-ASP-NET-MVC-Web-API-and-EntityFram
+					> 
+			> Code	
+				<> Create entities [DOMAIN]
+					C> public class Task : Entity<long> { ..properties..}
+					C> public class Task : Entity { ..properties..}
+				<> Create DbContext
+					C>
+						public class SimpleTaskSystemDbContext : AbpDbContext {
+							public virtual IDbSet<Task> Tasks { get; set; }
+							public virtual IDbSet<Person> People { get; set; }
+							public SimpleTaskSystemDbContext() : base("Default") {} // [web.config] <add name="Default" connectionString="..
+							public SimpleTaskSystemDbContext(string nameOrConnectionString) : base(nameOrConnectionString) {}
+						}
+				<> Create Database Migrations [DATA]
+					C> 
+						public class OrderConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Order> {
+							public OrderConfiguration() : this("dbo") {}
+							public OrderConfiguration(string schema) {
+								ToTable(schema + ".Orders"); 
+								HasKey(x => x.Id);
+								#region "Properties"
+									Property(x => x.Id).HasColumnName(@"Id").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+									Property(x => x.Code).HasColumnName(@"Code").IsOptional().HasColumnType("nvarchar");
+									...
+								#endregion
+								#region "Foreign keys"
+									HasOptional(ThisEntity => ThisEntity.ApplicationUser)
+															.WithMany(RelationEntity => RelationEntity.Orders) //Orders is a collection in RelationEntity
+															.HasForeignKey(ThisEntity => ThisEntity.AdviserId)
+															.WillCascadeOnDelete(false); // FK_dbo.Orders_dbo.ApplicationUser_AdviserId
+									...
+								#endregion
+						}
+					PowerShell> 
+						PM> Add-Migration "NewEntity_Person" -Verbose -ConnectionStringName "ls-callcenter" -Configuration "LaSirena.CallCenter.Migrations.Configuration"; 
+						PM> Update-Database -Verbose -ConnectionStringName "ls-callcenter"
+				<> Repositories [DATA]
+					C> 
+						public interface ITaskRepository : IRepository<Task, long> { .. }
+						public class TaskRepository : SimpleTaskSystemRepositoryBase<Task, long>, ITaskRepository { .. }
+				<> Build application services [SERVICES|APLICATION]
+					C>
+						public class TaskAppService : ApplicationService, ITaskAppServic {
+							private readonly ITaskRepository _taskRepository;					//ParticularRepository
+							private readonly IRepository<Person> _personRepository;		//GenericRepository
+							
+							public TaskAppService(ITaskRepository taskRepository, IRepository<Person> personRepository) {
+									_taskRepository = taskRepository; _personRepository = personRepository;
+							}
+							
+							public DtoEntity_Output CRUD_GetTasks(DtoInput input)
+							
+							
+							
+						}
+> Herramientas
+	> Visual Studio (plug-in)
+		> Plug-ins Visual Studio
+			> Tratamiento de documentación : GhostDoc
+			> PowerTools	
+	> PowerShell + Entity
+		> Caso de Uso
+			PM> Add-Migration "NewEntity_Person" -Verbose -ConnectionStringName "ls-callcenter" -Configuration "LaSirena.CallCenter.Migrations.Configuration"; 
+			PM> Update-Database -Verbose -ConnectionStringName "ls-callcenter"
+		> Webs
+			> Por aprobar ...
+				> [ http://stackoverflow.com/questions/17093288/scripting-ef-add-migration-into-an-automated-build-task ]
+				> [ https://coding.abel.nu/2012/03/ef-migrations-command-reference/#Add-Migration ]
+> Testing
+	> Unit test & integration test
+		> xUnit
+> Components
+	> AngularUI
+	> {Datatables}
+		> Por aprobar ...
+			> https://github.com/kekeh/vsdatatable
+			> https://github.com/angular-ui/ui-grid
+> Cross cutting concerns
+	> Validation
+	> Logging
+	> Exception handling
+	> Caching
+	> Automatic audit/security logging
+	> Automatic database connection management and unit of work implementation
+> Otros ...
+	> Real time push notification system (with SignalR integration)
+	> Background job system (with Hangfire integration)
+	> Built-in global event bus for server-side events (with pre-defined events for entity changes)
+	> Show and download logs from UI
+	> NEW Different time zone support for application, tenant and users
+>-------------------------------------------
+			> Objetos
+				> Para transformar unos objetos en otros: mappers, adapters, ¿parsers?.
+				> getters o setters ... POJO's en Java
+			> Objetos particulares
+				> asp.net EntityTypeConfiguration
+> Terminología
+	> Plain Old CLR Object. Objetos POCO (Objetos planos) : Objetos que solo tienen propiedades.
+	> CQRS
+	> Full SASS Support
+	> Full RTL Support
