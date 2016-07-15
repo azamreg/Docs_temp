@@ -1,0 +1,62 @@
+SERVICES Pattern
+	function DtoOut Get(DtoInput) {
+		
+		IN - SEARCH
+			>> Funcionalidad >>
+					DtoInput Mapping to EntityAplicationModel
+			
+			>> Estructura de datos >>
+					EntityAplicationModel_In (Join in Structure ¿Memory?)
+						EntityContractModel_In (Esta pieza sirve para estandarizar el modelo de datos de MassTransit)
+							> const string InMemoryConnectionString = "Data Source=:memory:;Version=3;New=True;Pooling=True;Max Pool Size=1;";
+						EntityModel_In (Esta pieza sirve para hacer where's genericos del SELECT)
+							> No tiene dbContext [In Memory] 
+
+		TRANSFORM [DATA]
+			>> Funcionalidad >>	
+				EntityAplicationModel_Transform (Not Join in Memory)
+					EntityContractModel_In -> MassTransit(colas) -> EntityContractModel_Out [IEnumerable]
+					EntityModel_In -> [uow [dbContext [EntityModel]] Repository (CRUD-Select + Join Entities) -> EntityModel_Query [IQueryable] (uow)
+			
+			>> Estructura de datos >>	
+				EntityAplicationModel_Transform
+					EntityContractModel_Out [ const string InMemoryConnectionString = "Data Source=:memory:;Version=3;New=True;Pooling=True;Max Pool Size=1;"; ]
+					EntityModel_Query [uow]
+					
+		OUT - MACHING (¡¡¡ A Revisar !!!)
+			>> Funcionalidad >>
+				EntityAplicationModel_Transform => ¿Repository? => EntityAplicationModel_Out
+					WHERE or JOIN in Memory => EntityContractModel_Out [IEnumerable] + EntityModel_Query [IQueryable] => EntityModel_QueryOut IQueryable 
+					Execution uow [dbContext] in Database => IList EntityModel_Out
+					JOIN EntityContractModel_Out [IEnumerable] + EntityModel_Out [IEnumerable] con DbSet => EntityAplicationModel_Out
+					
+		MAPPING
+				Mapping EntityAplicationModel_Out to DtoOut
+				
+	 }
+
+Notas :
+	> Si tienes dos dbContext el JOIN debe hacerse en Memoria.
+	> Using separate migration folders
+			
+			In such a scenario you might also want to work with different "Migration" folders in you project. You can set up your DbMigrationsConfiguration derived class accordingly using the MigrationsDirectory property:
+
+			internal sealed class ConfigurationA : DbMigrationsConfiguration<ModelA>
+			{
+					public ConfigurationA()
+					{
+							AutomaticMigrationsEnabled = false;
+							MigrationsDirectory = @"Migrations\ModelA";
+					}
+			}
+
+			internal sealed class ConfigurationB : DbMigrationsConfiguration<ModelB>
+			{
+					public ConfigurationB()
+					{
+							AutomaticMigrationsEnabled = false;
+							MigrationsDirectory = @"Migrations\ModelB";
+					}
+			}
+	
+	
