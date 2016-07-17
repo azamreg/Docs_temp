@@ -1,5 +1,25 @@
+> Ocio
+  > http://www.series-recomendadas.com/series/Comedia/
 > Code
-  Microsoft Github : https://microsoft.github.io/#/carousel-featured-repos
+  > Code Repositories
+      Microsoft Github : https://microsoft.github.io/#/carousel-featured-repos
+      Stackoverflow : http://stackoverflow.com/
+        > Entity Framework
+          > EF CodeFirst- Merging two DbContext : http://stackoverflow.com/questions/27875425/ef-codefirst-merging-two-dbcontext
+          > Entity Framework: One Database, Multiple DbContexts. Is this a bad idea? : http://stackoverflow.com/questions/11197754/entity-framework-one-database-multiple-dbcontexts-is-this-a-bad-idea
+        > MassTransit
+          > EntityFramework Saga persistance recreate schema in existing DB : http://stackoverflow.com/questions/34525909/entityframework-saga-persistance-recreate-schema-in-existing-db
+      Github :
+        > http://www.aspnetboilerplate.com/
+      Codeplex :
+        > https://json.codeplex.com/
+  > APIs Repositories
+      Nuget : https://www.nuget.org/
+  > Extensiones Visual Studio
+      http://www.jetbrains.com/decompiler/
+    
+  > CQRS WITH MONGODB+MASSTRANSIT+ASP.NET MVC+ANGULARJS : https://pablocastilla.wordpress.com/2014/03/19/mongodbmasstransitasp-net-mvcangularjs/
+
 
 
 > Revisar
@@ -8,4 +28,4 @@
   http://stackoverflow.com/questions/38285256/how-do-i-map-nested-objects
   http://stackoverflow.com/questions/tagged/automapper
   http://www.codeproject.com/Articles/791740/Using-AngularJs-ASP-NET-MVC-Web-API-and-EntityFram
-  http://www.aspnetboilerplate.com/
+  
