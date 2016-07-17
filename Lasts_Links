@@ -1,6 +1,9 @@
 > Ocio
   > http://www.series-recomendadas.com/series/Comedia/
+  
+  
 > Code
+
   > Code Repositories
       Microsoft Github : https://microsoft.github.io/#/carousel-featured-repos
       Stackoverflow : http://stackoverflow.com/
@@ -13,6 +16,15 @@
         > http://www.aspnetboilerplate.com/
       Codeplex :
         > https://json.codeplex.com/
+      MSDN :
+        > https://msdn.microsoft.com/en-us/data/jj591621#multiple
+        <> Bibilioteca de clases
+      		> Biblioteca de clases de NET Framework 2.0 SDK : https://msdn.microsoft.com/es-es/library/ms229335(v=vs.80).aspx
+      		> Biblioteca de clases de NET Framework 3.0 : https://msdn.microsoft.com/es-es/library/aa388745(v=vs.85).aspx
+      		> Biblioteca de clases de NET Framework 3.5 (Nov-2007) : https://msdn.microsoft.com/es-es/library/ms229335(v=vs.90).aspx
+      		> Biblioteca de clases de NET Framework 4.0 : https://msdn.microsoft.com/es-es/library/gg145045(v=VS.100).aspx
+      		> Biblioteca de clases de NET Framework 4.6 : https://msdn.microsoft.com/es-es/library/gg145045(v=vs.110).aspx
+      		
   > APIs Repositories
       Nuget : https://www.nuget.org/
   > Extensiones Visual Studio
@@ -20,7 +32,8 @@
     
   > CQRS WITH MONGODB+MASSTRANSIT+ASP.NET MVC+ANGULARJS : https://pablocastilla.wordpress.com/2014/03/19/mongodbmasstransitasp-net-mvcangularjs/
 
-
+  > Google :
+      > https://www.google.es/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=entity%20framework%20with%20mass%20transit
 
 > Revisar
   http://stackoverflow.com/questions/3672447/how-do-you-map-a-dto-to-an-existing-object-instance-with-nested-objects-using-au
