@@ -7,6 +7,9 @@
 			> https://msdn.microsoft.com/es-es/library/ms123401.aspx							
 		> NET
 			> http://www.asp.net/
+		> AngularJS
+			> https://angularjs.org/ >Develop>[ API Reference | Tutorial ]
+			
 	> Por aprobar ...
 		> Articulos de .NET > http://www.strathweb.com/
 > Recursos
@@ -16,11 +19,48 @@
 > Protocolos
 	> Transporte
 		> AMQP [para MassTransit]
+		> HTTP
+		> HTTPS
 > APIs
 	> Servidor
-		> Mensajer韆 [MassTransit]
+		> Mensajer铆a [MassTransit]
 		> Logging [Log4Net]
 		> Mapping objects [AutoMapper]
+			> Mapping ObjectSimple to ObjectComplex (new object from ObjectComplex.Property)
+					public static class MapperConfig {
+							public static void Ini() {
+									Mapper.CreateMap<Dto.Persons.Persons_GetList_DtoInput, Entities.Person>()
+											.ForMember(
+													dest => dest.Adresses,
+													opts => opts.MapFrom(
+															src => new List<Entities.PersonAddress> {
+																	new Entities.PersonAddress {
+																			AddressAddress = src.AddressAddress,
+																			AddressPostalCode = src.AddressPostalCode
+																	}
+															}
+													)
+											);
+							}
+					}
+			> Mapping ObjectComplex to ObjectSimple (mapping properties)
+					public static class MapperConfig {
+							public static void Ini() {
+								Mapper.CreateMap<Entities.Person, Dto.Persons.Persons_List_DtoEntity>()
+										.ForMember(dest => dest.NameQueryType, opts => opts.MapFrom(src => src.QueryType.NameQueryType))
+										.ForMember(dest => dest.Language, opts => opts.MapFrom(src => src.Language.Language))
+										.ForMember(dest => dest.State, opts => opts.MapFrom(src => src.State.State)
+										);
+							}
+					}
+			> Solucionar errores de redundancia [ Person + PersonAddress [Person] ]
+					public static class MapperConfig {
+							public static void Ini() {
+								Mapper.CreateMap<Entities.PersonAddress, Entities.PersonAddress>()
+										.ForMember( dest => dest.Person, opt => opt.Ignore() )
+								;
+							}
+					}			
 		> Validations [Fluent Validation]
 		> Archivos csv [csv Helper]
 		> Testing [Mocking]
@@ -29,17 +69,17 @@
 	> Cliente
 		> jQuery (v.1.10.2)
 > Patrones
-	> Patrones de dise駉
+	> Patrones de dise帽o
 		> Unit of Work [Repository | Transactions]
 		> Data Acces Object (DAO)
-	> Patrones de creaci髇: 
+	> Patrones de creaci贸n: 
 		> Factory
 	> Patrones de caso de uso:
-		> M閠odos CRUD
+		> M茅todos CRUD
 		> Reglas de negocio
 		> Login
-		> Reportes y Explotaci髇 de informaci髇
-		> Inclusi髇 y Extensi髇
+		> Reportes y Explotaci贸n de informaci贸n
+		> Inclusi贸n y Extensi贸n
 > Arquitecturas
 	> Layered Architecture.
 		> Data
@@ -70,12 +110,15 @@
 						}
 								
 				
-			> Repositorios (Ver patron de dise駉 -Repository-)
+			> Repositorios (Ver patron de dise帽o -Repository-)
 > ORMs (Object-Relational Mapping)
 	> EntityFramework v6
 		> Entity Framework Class Library 6.0 [ https://msdn.microsoft.com/en-us/library/mt154346(v=vs.113).aspx ]
 			> System.Data.Entity
 			> System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<TEntity>
+		> Saber errores de validaci贸n
+			O> Ventana Inmediato > ((System.Data.Entity.Validation.DbEntityValidationException)$exception) .EntityValidationErrors.First() .ValidationErrors.First()
+			
 	> NHibernate
 > Frameworks
 	> Framework -HTML/CSS-
@@ -87,11 +130,111 @@
 		> > ASP.NET vNext (a unified framework set to succeed MVC, Web API and Web Pages)
 	> Framework -SPA (Single Page Web Application)-
 		> AngularJS
+			> API [ https://docs.angularjs.org/api ]
+				> ng
+					> functions
+						> angular.module : A module is a collection of services, directives, controllers, filters, and configuration information. angular.module is used to configure the $injector.
+							=> Nuevo modulo (con servicios externos)	=> var app = angular.module('app', ['ngAnimate','ngSanitize','ui.router','ui.bootstrap','ui.jq','abp']);
+							=> Configurar un servicio (ej. ui.router) => angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) { .. }]);
+					> diretives
+					> object
+					> types
+					> providers
+					> services
+					> filters
+				> auto
+				>* ngAnimate
+				> ngAria
+				> ngComponentRouter
+				> ngCookies
+				> ngMessageFormat
+				> ngMessages
+				> ngMock
+				> ngMockE2E
+				> ngParseExt
+				> ngResource
+				> ngRoute			
+				>* ngSanitize
+				> ngTouch				
+			> angular-ui
+				> ui.router [ https://github.com/angular-ui/ui-router/wiki ] [ http://angular-ui.github.io/ui-router/#resources ]
+					=> Configurar 
+						o: angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) { .. }]);
+						o: angular.module("myApp", ["ui.router"]).config(function($stateProvider){ $stateProvider.state(stateName, stateConfig); })
+					=> Modules
+						=> ui.router.router
+							-> Services
+									> $urlRouter		
+											>> Provider
+													> when()
+													> otherwise()
+													> rule()											
+											> sync() - v0.2.5
+						=> ui.router.state
+							-> Directives
+									> ui-sref
+									> ui-sref-active
+									> ui-sref-active-eq
+									> ui-state
+									> ui-view
+							-> Filters
+									> isState - (v0.3)
+									> includedByState - (v0.3)							
+							-> Services
+									> $state							
+											>> Provider
+													> state()
+															> stateName
+															> stateConfig
+													> decorator()											
+											>* go() - v0.2.0
+											> transitionTo()
+											> reload()- v0.2.5
+											> includes()
+											> is()
+											> href() - v0.2.0
+											> get() - v0.2.0
+											=> current
+											=> note: using $state within templates							
+									> $uiViewScroll				
+											>> Provider
+									> $view
+						=> ui.router.util
+							-> Objects
+									> Type
+									> UrlMatcher
+							-> Services
+									> $resolve
+									> $templateFactory
+									> $urlMatcherFactory
+											>> Provider
+					=> Common Examples
+							o> 
+								$stateProvider.state('toState', { templateUrl:'wokka.html', controller:'stateController', params: { 'referer': 'some default', 'param2': 'some default', 'etc': 'some default' } });
+								$state.go('toState', { 'referer':'jimbob', 'param2':37, 'etc':'bluebell' });
+								app.controller('overviewController', function($scope, $stateParams) { var index = $stateParams[0]; var anotherKey = $stateParams.referer; });
+				> ui.bootstrap
+				> ui.jq
+			> otros
+				> json-formatter [ https://github.com/mohsen1/json-formatter ]
+					=> A帽adir al proyecto  : var app = angular.module('app', ['jsonFormatter']);
+					=> Usar como directiva : <json-formatter json="vm" open="0"></json-formatter>
 		> Durandal
-	> Framework -Dependency Injection-
+	> Framework -Dependency Injection- (Contenedores)
 		> Castle Windsor
 		> Microsoft Unity
 		> NInject
+	> Framework -Contenedores- [Contenedor de IoC]
+		> Patrones:
+			-> Service Locator
+			-> Dependency Injection
+		> Capacidades:
+			-> Generaci贸n de proxies -> intercepci贸n {Ejecuta c贸digo antes y/o despu茅s de la funcionalidad}
+						
+		> 驴?
+			> Castle Windsor
+			> Microsoft Unity
+			> NInject
 	> Framework -Application-
 		> ASP.NET Boilerplate
 			> Webs
@@ -133,8 +276,9 @@
 								#endregion
 						}
 					PowerShell> 
-						PM> Add-Migration "NewEntity_Person" -Verbose -ConnectionStringName "ls-callcenter" -Configuration "LaSirena.CallCenter.Migrations.Configuration"; 
-						PM> Update-Database -Verbose -ConnectionStringName "ls-callcenter"
+						[Crear el cs de Migracion				] PM> Add-Migration "NewEntity_Person" -Verbose -ConnectionStringName "ls-callcenter" -Configuration "LaSirena.CallCenter.Migrations.Configuration" -Force; 
+						[Actualizar la Base de datos		] PM> Update-Database -Verbose -ConnectionStringName "ls-callcenter"
+						[Volver a una migraci贸n anterior] PM> Update-Database -Target:201605041151380_UserAccount_And_Notification_Changes
 				<> Repositories [DATA]
 					C> 
 						public interface ITaskRepository : IRepository<Task, long> { .. }
@@ -157,7 +301,7 @@
 > Herramientas
 	> Visual Studio (plug-in)
 		> Plug-ins Visual Studio
-			> Tratamiento de documentaci髇 : GhostDoc
+			> Tratamiento de documentaci贸n : GhostDoc
 			> PowerTools	
 	> PowerShell + Entity
 		> Caso de Uso
@@ -183,20 +327,120 @@
 	> Caching
 	> Automatic audit/security logging
 	> Automatic database connection management and unit of work implementation
+> Code
+	> NET
+		> Generar proxys -> intercepci贸n { inyectar c贸digo antes o despu茅s de una clase particular } => IoC {Unity + Attributes}
+				1> Preparaci贸n del entorno
+						1.1> A帽adir referencias al Unity
+						1.2> Crear una interfaz, y la clase que vamos a interceptar: o> public interface IMyInterface{r}{n}{{r}{n}    string SomeProperty { get; set; }{r}{n}}{r}{n}public class MyClass : IMyInterface{r}{n}{{r}{n}    public string SomeProperty { get; set; }{r}{n}}
+						1.3> en el m茅todo Main() creamos un contenedor de Unity y registramos el mapping entre la interfaz y el tipo: o> static void Main(string[] args){r}{n}{{r}{n}    UnityContainer uc = new UnityContainer();{r}{n}    uc.RegisterType<IMyInterface, MyClass>();{r}{n}}
+				2> Configuraci贸n de Unity para que use un interceptor
+						2.1> Vamos a configurar Unity para que use un interceptor cuando se resuelva la interfaz IMyInterface. 
+									Para ello, primero debemos a帽adir la extensi贸n de intercepci贸n a Untiy y luego configurarla
+									o> static void Main(string[] args){r}{n}{{r}{n}    UnityContainer uc = new UnityContainer();{r}{n}    uc.RegisterType<IMyInterface, MyClass>();{r}{n}    // A帽adimos la extensi贸n de intercepci贸n{r}{n}    uc.AddNewExtension<Interception>();{r}{n}    // La configuramos para que nos devuelva{r}{n}    // un TransparentProxy cuando resolvamos IMyInterface{r}{n}    uc.Configure<Interception>().{r}{n}    SetInterceptorFor<IMyInterface>{r}{n}        (new TransparentProxyInterceptor());{r}{n}    var u = uc.Resolve<IMyInterface>();{r}{n}    u.SomeProperty = "test";{r}{n}}						
+				3> Crear el interceptor
+						3.1> Crear un interceptor, que defina que ocurre cuando se intercepta un m茅todo o propiedad de la clase. Para ello vamos a crear una clase nueva que implementa la interfaz ICallHandler.
+									o> public class MyHandler : ICallHandler {{r}{n}    public IMethodReturn Invoke(IMethodInvocation input, GetNextHandlerDelegate getNext) {{r}{n}        // A帽adir c贸digo funcional{r}{n}        Console.WriteLine("Se ha llamado {0} con valor {1}", input.MethodBase.Name, input.Inputs[0]);{r}{n}        IMethodReturn msg = getNext()(input, getNext);{r}{n}        return msg;{r}{n}    }{r}{n}    public int Order { get; set; }{r}{n}}						
+				4> Indicar que m茅todos / propiedades queremos interceptar
+						4.1> En nuestro caso tenemos un s贸lo interceptor (MyHandler), as铆 que a帽adiremos un atributo MyHandlerAttribute.
+									Para ello vamos a crear una clase que derive de HandlerAttribute (la cual a su vez deriva de Attribute), y redefinir el m茅todo CreateHandler. En este m茅todo debemos devolver el Handler que deseemos:
+									o> [AttributeUsage(AttributeTargets.Property)]{r}{n}class MyHandlerAttribute : HandlerAttribute {{r}{n}    public override ICallHandler CreateHandler (IUnityContainer container) {{r}{n}        return new MyHandler();{r}{n}    }{r}{n}}									
+				5> Aplicar el atributo a las propiedades que deseemos
+						5.1> Para ello simplemente decoramos las propiedades (o m茅todos) que deseemos con el atributo:
+									o> public class MyClass : IMyInterface {{r}{n}    [MyHandler]{r}{n}    public string SomeProperty { get; set; }{r}{n}}						
+						
+	> angularJS
+		> Global functions
+			> Has de pasar el template al controller 		o> var myApp = angular.module('myApp', []);{r}{n}{r}{n}    myApp.factory('myService', function() {{r}{n}        return {{r}{n}            foo: function() {{r}{n}                alert("I'm foo!");{r}{n}            }{r}{n}        };{r}{n}    });{r}{n}{r}{n}    myApp.controller('MainCtrl', ['$scope', 'myService', function($scope, myService) {{r}{n}        $scope.callFoo = function() {{r}{n}            myService.foo();{r}{n}        }{r}{n}    }]);			
+			> No has de pasar el template al controller o> var myApp = angular.module('myApp', []);{r}{n}{r}{n}    myApp.run(function($rootScope) {{r}{n}        $rootScope.globalFoo = function() {{r}{n}            alert("I'm global foo!");{r}{n}        };{r}{n}    });{r}{n}{r}{n}    myApp.controller('MainCtrl', ['$scope', function($scope){{r}{n}{r}{n}    }]);
+			> Combinando las dos opciones anteriores		o> var myApp = angular.module('myApp', []);{r}{n}{r}{n}    myApp.factory('myService', function() {{r}{n}            return {{r}{n}                foo: function() {{r}{n}                    alert("I'm foo!");{r}{n}                }{r}{n}            };{r}{n}        });{r}{n}{r}{n}        myApp.run(function($rootScope, myService) {{r}{n}            $rootScope.appData = myService;{r}{n}        });{r}{n}{r}{n}        myApp.controller('MainCtrl', ['$scope', function($scope){{r}{n}{r}{n}        }]);
+	> jQuery
+		> Clone object
+			> Shallow copy 	o> var copiedObject = jQuery.extend({}, originalObject)
+			> Deep copy			o> var copiedObject = jQuery.extend(true, {}, originalObject)
+	> JavaScript
+		> Clone object
+			o> function clone(obj) { if (null == obj || "object" != typeof obj) return obj; var copy = obj.constructor(); for (var attr in obj) { if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]; } return copy; }
+			o> function clone(obj) { var copy;{r}{r}    // Handle the 3 simple types, and null or undefined{r}    if (null == obj || "object" != typeof obj) return obj;{r}{r}    // Handle Date{r}    if (obj instanceof Date) {{r}        copy = new Date();{r}        copy.setTime(obj.getTime());{r}        return copy;{r}    }{r}{r}    // Handle Array{r}    if (obj instanceof Array) {{r}        copy = [];{r}        for (var i = 0, len = obj.length; i < len; i++) {{r}            copy[i] = clone(obj[i]);{r}        }{r}        return copy;{r}    }{r}{r}    // Handle Object{r}    if (obj instanceof Object) {{r}        copy = {};{r}        for (var attr in obj) {{r}            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);{r}        }{r}        return copy;{r}    }{r}{r}    throw new Error("Unable to copy obj! Its type isn't supported.");{r}}
+		> Compare object with type
+			o> if (obj instanceof Array) { .. }
 > Otros ...
 	> Real time push notification system (with SignalR integration)
 	> Background job system (with Hangfire integration)
 	> Built-in global event bus for server-side events (with pre-defined events for entity changes)
 	> Show and download logs from UI
 	> NEW Different time zone support for application, tenant and users
+> Errors
+	> NET Entity
+		> Error : Validation failed for one or more entities. See 'EntityValidationErrors' property for more details.
+			> Ver el problema (QuickWatch)			 : o> ((System.Data.Entity.Validation.DbEntityValidationException)$exception).EntityValidationErrors
+																						 o> context.GetValidationErrors()
+			> Ver el problema (inmediate window) : o> ((System.Data.Entity.Validation.DbEntityValidationException)$exception).EntityValidationErrors.First().ValidationErrors.First()
+> Tipos de programaci贸n
+	> Programaci贸n Orientada a Objetos
+	> Programaci贸n Orientada a Aspectos
+		> 
 >-------------------------------------------
 			> Objetos
-				> Para transformar unos objetos en otros: mappers, adapters, 縫arsers?.
+				> Para transformar unos objetos en otros: mappers, adapters, 驴parsers?.
 				> getters o setters ... POJO's en Java
 			> Objetos particulares
 				> asp.net EntityTypeConfiguration
-> Terminolog韆
+
+> Terminolog铆a
+	> AngularJS
+		> Modulos
+		> Services
+		> Factories
+		> Controllers
+		> Directives
+		> Components
+	
+	> NET
+		> OOP
+			> Tipos
+				> Tipos por valor
+					> Structs		=> Aplica boxing/unboxing
+						> Tipos num茅ricos
+							> Tipos integrales
+							> Tipos de punto flotante
+							> decimal
+						> bool
+						> Structs definidos por el usuario.
+					> Enumeraciones
+				> Tipos por refencia
+					> Clase		=> Estructura con propiedades y funcionalidades
+					> Interface
+					> Delegate
+				> Tipos de puntero
+						+> sbyte, byte, short, ushort, int, uint, long, ulong, char, float, double, decimal o bool.
+						+> Cualquier tipo de enum.
+						+> Cualquier tipo de puntero (pointer).
+						+> Cualquier tipo de struct definido por el usuario que s贸lo contenga campos de tipos no administrados.				
+			> Objeto	=> Instancia de una clase.
+		> Tipos [M茅todos | Propiedades | Campos | Eventos]
+		> Element {FormElement}, Node {XMLNode}, Log {EventLog} y Message {SoapMessage}
+		> snippet
+		> atribute
+		> interceptor
+		> provider
+		> delegados
+		> enumeraciones
+		> notaci贸n h煤ngara (no utilizar) => prefijos en los identificadores.
+		> graf铆a Pascal => La primera letra del identificador y la primera letra de las siguientes palabras concatenadas est谩n en may煤sculas.
+		> graf铆a Camel => La primera letra del identificador est谩 en min煤scula y la primera letra de las siguientes palabras concatenadas en may煤scula. 
+		> Common Language Runtime (CLR).
+		> {Class}Attribute		=> Atributos personalizados
+		> {Class}EventHandler => Controladores de eventos personalizados (extiende de EventHandler).
+		> {Class}EventArgs 		=> Argumento de evento personalizado (extiende de System.EventArgs).		
+		> {Class}Callback => Nombre de un delegado que no sea un controlador de eventos.
+		> {Class}Exception => Tipos que heredan de System.Exception.
+		> {Class}Dictionary => Tipos que implementan System.Collections.IDictionary o su generico.
+		> {Class}Collection => Tipos que implementan System.Collections.IEnumerable, System.Collections.ICollection, System.Collections.IList
+		> {Class}Stream => Tipos que heredan de System.IO.Stream.
+		> {Class}Permission => Tipos que heredan de System.Security.CodeAccessPermission o implementan System.Security.IPermission.
 	> Plain Old CLR Object. Objetos POCO (Objetos planos) : Objetos que solo tienen propiedades.
 	> CQRS
 	> Full SASS Support
 	> Full RTL Support
+	
